@@ -3,9 +3,9 @@
 -- 2 skriven av båda.
 module F1 where
 import Data.Char
-import qualified Data.Sequence as Seq
 
 -- 1. Fibonacci-talen ↴
+-- fib tar ett input n och returnerar värdet av det n:te Fibonaccitalet
 fib :: Int -> Integer
 fib n = fibs !! n
     where
@@ -22,35 +22,39 @@ fib n = fib' n 0 1
 -}
 
 -- 2. Rövarspråket ↴
--- Dessa konstanter används för att snabbt kolla om en char är en konsonant 
--- eller en rövarspråks variant av en konsonant
+-- consonant används för att snabbt evaluera om en char är en konsonant
+consonant :: String
 consonant = "bcdfghjklmnpqrstvwxz"
 
+-- rovarsprak tar en String och gör om den till rövarspråk
 rovarsprak :: String -> String
 rovarsprak (a:b)
     | a `elem` consonant    = a : 'o' : a : rovarsprak b
     | otherwise             = a : rovarsprak b
-rovarsprak ""  = ""
+rovarsprak ""  = "" -- avslutas om hela Stringen har utvärderats
 
+-- karpsravor tar en String och gör den till icke-rövarspråk
 karpsravor :: String -> String
 karpsravor (a:b)
-    |   a `elem` consonant    =  a : karpsravor (drop 2 b)
+    |   a `elem` consonant    =  a : karpsravor (drop 2 b) -- droppar 'o':a
     |   otherwise             =  a : karpsravor b
-karpsravor "" = ""                           
+karpsravor "" = "" -- avslutas om hela Stringen har utvärderats                     
 
 -- 3. Medellängd ↴
+-- medellangd tar en string och returnar den genomsnittliga mängden bokstavskaraktärer per ord
 medellangd :: String -> Double 
 medellangd text =
     fst sum / snd sum
     where
         sum = medellangd' text 0 0
-        medellangd' (char:"") lc wc 
-            | isAlpha char  = ((lc+1),(wc+1))
+        -- medellangd' är en stödfunktion som räknar antalet bokstäver och antalet ord i en String och returnar en tuple. Ordantalet ökar då ett ord avslutas.
+        medellangd' (char:"") lc wc -- den sista karaktären utvärderas
+            | isAlpha char  = ((lc+1),(wc+1)) -- är det en bokstav ökar bokstavsantalet och ordantalet med 1 innan det returnas
             | otherwise     = (lc,wc)
         medellangd' (char1:char2:text) lc wc 
-            | isAlpha char1 && not (isAlpha char2)  = medellangd' (char2:text) (lc+1) (wc+1)
-            | isAlpha char1                         = medellangd' (char2:text) (lc+1) wc
-            | otherwise                             = medellangd' (char2:text) lc wc
+            | isAlpha char1 && not (isAlpha char2)  = medellangd' (char2:text) (lc+1) (wc+1) -- Ett ord avslutas
+            | isAlpha char1                         = medellangd' (char2:text) (lc+1) wc -- Ett ord pågår
+            | otherwise                             = medellangd' (char2:text) lc wc -- Inte ett ord
 
 {-
 medellangd :: String -> Double
@@ -66,11 +70,19 @@ medellangd s = medellangd' s 0 0 False
 -}
 
 -- 4. Listskyffling ↴
+-- skyffla kastar om en lista genom att ta ut vartannat tal och lägga in i en ny lista, och därefter utföra samma operation på övriga 
+-- element tills att hela listan kastats om till en ny lista
 skyffla :: [a] -> [a]
 skyffla l = smocka l [] 
+
+-- smocka
+smocka :: [a] -> [a] -> [a]
 smocka (a:b:l) evens    = a : smocka l (b:evens)
 smocka [a] evens        = a : blocka evens 
 smocka [] evens         = blocka evens 
+
+-- blocka 
+blocka :: [a] -> [a]
 blocka [] = []
 blocka evens            = smocka (reverse evens) []
 
