@@ -9,8 +9,8 @@ import Data.Char
 fib :: Int -> Integer
 fib n = fibs !! n
     where
-        fibs = 0 : 1 : fibs' 0 1
-        fibs' a  b = (a + b) : fibs' b (a + b)
+        fibs = 0 : 1 : fibs' 0 1 -- bygg en bas för en oändlig fibonaccilista
+        fibs' a  b = (a + b) : fibs' b (a + b) -- rekursivt call som skapar en oändlig fibonaccilista
 {-
 fib :: Int -> Int
 fib 0 = 0
@@ -77,14 +77,14 @@ skyffla l = smocka l []
 
 -- smocka
 smocka :: [a] -> [a] -> [a]
-smocka (a:b:l) evens    = a : smocka l (b:evens)
-smocka [a] evens        = a : blocka evens 
-smocka [] evens         = blocka evens 
+smocka (a:b:l) evens    = a : smocka l (b:evens) -- dela listan i ett udda head, ett jämnt head och tail. Spara värdet på den jämna positionen i evens, och konkatenera a med ett rekursivt anrop på funktionen med tail.
+smocka [a] evens        = a : blocka evens -- hantera fallet där bara ett värde på en udda position återstår i listan
+smocka [] evens         = blocka evens -- hantera tom lista
 
 -- blocka 
 blocka :: [a] -> [a]
-blocka [] = []
-blocka evens            = smocka (reverse evens) []
+blocka [] = [] -- listan är tom och vi är klara med operationen
+blocka evens            = smocka (reverse evens) [] -- om det finns element i ackumulatorn 'evens', kalla smocka på reverserad evens eftersom elementen är i bakvänd ordning pga :
 
 
 {-
