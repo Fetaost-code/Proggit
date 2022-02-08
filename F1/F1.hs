@@ -76,12 +76,15 @@ skyffla :: [a] -> [a]
 skyffla l = smocka l [] 
 
 -- smocka
+-- hjälpfunktion till skyffla. Konkatenerar alla element på udda positioner med varandra, och sparar alla element på jämna positioner i listan evens.
 smocka :: [a] -> [a] -> [a]
 smocka (a:b:l) evens    = a : smocka l (b:evens) -- dela listan i ett udda head, ett jämnt head och tail. Spara värdet på den jämna positionen i evens, och konkatenera a med ett rekursivt anrop på funktionen med tail.
 smocka [a] evens        = a : blocka evens -- hantera fallet där bara ett värde på en udda position återstår i listan
 smocka [] evens         = blocka evens -- hantera tom lista
 
 -- blocka 
+-- hjälpfunktion till smocka. Om listan evens innehåller element, reversera den så elementen hamnar i rätt ordning, och använd den
+-- fixade listan som parameter för smocka
 blocka :: [a] -> [a]
 blocka [] = [] -- listan är tom och vi är klara med operationen
 blocka evens            = smocka (reverse evens) [] -- om det finns element i ackumulatorn 'evens', kalla smocka på reverserad evens eftersom elementen är i bakvänd ordning pga :
